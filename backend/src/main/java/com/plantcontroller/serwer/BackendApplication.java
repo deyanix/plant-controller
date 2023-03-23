@@ -1,4 +1,4 @@
-package com.plant_controller.backend;
+package com.plantcontroller.serwer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
