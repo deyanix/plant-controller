@@ -9,3 +9,5 @@ Commands used to prepare Quasar CLI environment.
 Run the following command.
  1. Quasar install depencies: `npm install`
  2. Run server in development mode: `npm run dev`
+
+## What was changed
