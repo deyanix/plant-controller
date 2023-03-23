@@ -5,7 +5,9 @@ const routes = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: 'main-dashboard', component: () => import('pages/MainDashboard.vue') }
+      { path: 'main-dashboard', component: () => import('pages/MainDashboard.vue') },
+      { path: 'test-composition-api', component: () => import('pages/TestCompositionApi.vue') }
+
 
     ]
   },

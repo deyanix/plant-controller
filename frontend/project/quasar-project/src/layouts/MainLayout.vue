@@ -57,10 +57,10 @@ const linksList = [
     link: 'main-dashboard'
   },
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
+    title: 'Test Composition Api',
+    caption: 'This site is for testing Composition Api',
     icon: 'code',
-    link: 'https://github.com/quasarframework'
+    link: 'test-composition-api'
   },
   {
     title: 'Discord Chat Channel',
