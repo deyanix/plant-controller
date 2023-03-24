@@ -15,11 +15,12 @@
           Optymalne Nawadnianie Roślin
         </q-toolbar-title>
 
-        <div>Quasar v{{ $q.version }}</div>
+        <!--<div>Quasar v{{ $q.version }}</div>-->
       </q-toolbar>
     </q-header>
 
     <q-drawer
+      class="bg-light-blue-2"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -39,7 +40,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="bg-light-blue-8">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -57,41 +58,23 @@ const linksList = [
     link: 'main-dashboard'
   },
   {
-    title: 'Test Composition Api',
-    caption: 'This site is for testing Composition Api',
-    icon: 'code',
-    link: 'test-composition-api'
+    title: 'Account',
+    caption: 'Show accounts information',
+    icon: 'person',
+    link: '#'
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    title: 'Plants',
+    caption: 'Show your plants',
+    icon: 'emoji_nature',
+    link: '#'
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    title: 'Settings',
+    caption: 'Change your account settings',
+    icon: 'settings',
+    link: '#'
   },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
 ]
 
 export default defineComponent({

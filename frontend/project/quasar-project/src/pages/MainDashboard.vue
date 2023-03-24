@@ -82,8 +82,8 @@
 </script>
 
 <template>
-  <q-page padding class="">
-    <q-card>
+  <q-page padding>
+    <q-card class="bg-light-blue-1">
       <q-card-section>
         <div class="row">
           <div class="col-12">

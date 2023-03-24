@@ -1,5 +1,6 @@
 <template>
   <q-item
+    class="custom-background-links"
     clickable
     tag="a"
     v-bind:href="link"
