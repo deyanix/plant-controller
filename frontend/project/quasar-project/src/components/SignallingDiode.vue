@@ -1,5 +1,5 @@
 <template>
-  <div :class="{ 'led-on': isActive, 'led-off': !isActive }" class="shadow-5"></div>
+  <div :class="{ 'led-on': isActive, 'led-off': !isActive }" class="shadow-5 d-inline-block"></div>
 </template>
 
 <script setup>

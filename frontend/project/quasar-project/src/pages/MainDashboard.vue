@@ -3,8 +3,22 @@
   //import { mainDashboardTable } from './data/mainDashboardTable.js'
   //import TrafficLight from 'src/components/TrafficLight.vue'
   import SignallingDiode from 'src/components/SignallingDiode.vue';
+  import CurrentHumidity from 'src/components/CurrentHumidity.vue'
   
+  const props = defineProps({
+  currentHumidity: String,
+  changeCurrentHumidity: Function
+  })
 
+  const currentHumidityValue = ref(props.currentHumidity)
+
+  function updateCurrentHumidity() {
+    props.changeCurrentHumidity(currentHumidityValue.value)
+  }
+
+  onMounted(() => {
+    currentHumidityValue.value = props.currentHumidity
+  })
   
   const rows = ref([])
   const columns = reactive([
@@ -72,15 +86,22 @@
     <q-card>
       <q-card-section>
         <div class="row">
-          <div class="q-pa-md col-6">
+          <div class="col-12">
             <h1 class="text-h4">Dashboard</h1>
-            <p class="text-subtitle2">
-              Device Status: {{ deviceStatus }}
-            </p>
           </div>
-          <div class="col-6">
-            <SignallingDiode v-bind:isActive="isActive" v-bind:toggleActive="toggleActive" />
-            <q-btn @click="toggleActive">Klik!</q-btn>
+          <div class="q-pa-md col-4 d-inline-flex">
+            <span class="text-subtitle2 text-left">Device Status:</span>
+            <div class="d-inline-block text-right">
+              <SignallingDiode v-bind:isActive="isActive" v-bind:toggleActive="toggleActive" />
+            </div>          
+          </div>
+          <div class="col-4 q-pa-md">
+            <span class="text-subtitle2"><CurrentHumidity :current-humidity="currentHumidityValue" /></span>
+          </div>
+          <div class="col-4 text-right q-pa-md">
+            <q-btn @click="toggleActive" class="full-width">Klik!</q-btn>
+            <br><br>
+            <q-input outlined id="humidityInput" class="full-width" v-model="currentHumidityValue" @keyup.enter="updateCurrentHumidity" />
           </div>
         </div>
       </q-card-section>
