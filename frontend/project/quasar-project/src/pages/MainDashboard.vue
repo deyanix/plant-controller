@@ -1,7 +1,7 @@
 <script setup>
   import { ref, reactive, computed, onMounted } from 'vue'
   //import { mainDashboardTable } from './data/mainDashboardTable.js'
-  import TrafficLight from './components/TrafficLight.vue'
+  import TrafficLight from 'src/components/TrafficLight.vue'
 
   const rows = ref([])
   const columns = reactive([
