@@ -1,8 +1,11 @@
 <script setup>
   import { ref, reactive, computed, onMounted } from 'vue'
   //import { mainDashboardTable } from './data/mainDashboardTable.js'
-  import TrafficLight from 'src/components/TrafficLight.vue'
+  //import TrafficLight from 'src/components/TrafficLight.vue'
+  import SignallingDiode from 'src/components/SignallingDiode.vue';
+  
 
+  
   const rows = ref([])
   const columns = reactive([
     {
@@ -35,9 +38,11 @@
   const hideHeader = ref(false)
   const hideBottom = ref(false)
 
-  const deviceStatus = computed(() => {
-    return false
-  })
+  const isActive = ref(false)
+
+  const toggleActive = () => {
+    isActive.value = !isActive.value
+  }
 
   onMounted(() => {
     //rows.value = mainDashboardTable
@@ -73,12 +78,9 @@
               Device Status: {{ deviceStatus }}
             </p>
           </div>
-          <div class="col-6 bg-dark">
-            <h4 class="text-accent q-pa-md">
-            Tutaj zrobię sygnalizator świetlny, który pokaże status urządzenia.
-            </h4>
-            <TrafficLight>
-            </TrafficLight>
+          <div class="col-6">
+            <SignallingDiode v-bind:isActive="isActive" v-bind:toggleActive="toggleActive" />
+            <q-btn @click="toggleActive">Klik!</q-btn>
           </div>
         </div>
       </q-card-section>
