@@ -40,7 +40,7 @@ public class PlantSensorController {
                     return repository.save(plantSensor);
                 })
                 .orElseGet(() -> {
-                    newPlantSensor.setPlantSensorId(id);
+                    newPlantSensor.setId(id);
                     return repository.save(newPlantSensor);
                 });
     }

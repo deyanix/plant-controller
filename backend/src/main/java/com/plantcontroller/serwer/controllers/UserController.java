@@ -42,7 +42,7 @@ public class UserController {
                     return repository.save(user);
                 })
                 .orElseGet(() -> {
-                    newUser.setUserId(id);
+                    newUser.setId(id);
                     return repository.save(newUser);
                 });
     }

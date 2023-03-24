@@ -41,7 +41,7 @@ public class MeasurementController {
                     return repository.save(measurement);
                 })
                 .orElseGet(() -> {
-                    newMeasurement.setMeasureId(id);
+                    newMeasurement.setId(id);
                     return repository.save(newMeasurement);
                 });
     }

@@ -11,9 +11,9 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Measurement {
     @Id @GeneratedValue
-    private int measureId;
+    private int Id;
     private String measureDate;
     private int measureValue;
-    @ManyToOne @JoinColumn(name="plantSensorId")
+    @ManyToOne @JoinColumn(name="Id")
     private PlantSensor plantSensor;
 }

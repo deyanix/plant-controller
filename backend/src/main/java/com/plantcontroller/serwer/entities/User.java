@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class User {
-    private @Id @GeneratedValue int userId;
+    private @Id @GeneratedValue int Id;
     private String userName;
     private String userEmail;
     private String userPassword;
