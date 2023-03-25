@@ -2,11 +2,13 @@ package com.plantcontroller.server.controllers;
 
 import com.plantcontroller.server.entities.User;
 import com.plantcontroller.server.repositories.UserRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name="User")
 @RestController
 public class UserController {
     private final UserRepository repository;
@@ -35,7 +37,7 @@ public class UserController {
 
         return repository.findById(id)
                 .map(user -> {
-                    user.setName(newUser.getName());
+                    user.setUsername(newUser.getUsername());
                     user.setEmail(newUser.getEmail());
                     user.setPassword(newUser.getPassword());
                     return repository.save(user);

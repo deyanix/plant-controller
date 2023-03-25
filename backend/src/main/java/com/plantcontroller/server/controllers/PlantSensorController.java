@@ -2,11 +2,13 @@ package com.plantcontroller.server.controllers;
 
 import com.plantcontroller.server.entities.PlantSensor;
 import com.plantcontroller.server.repositories.PlantSensorRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name="Plant-Sensor")
 @RestController
 public class PlantSensorController {
     private final PlantSensorRepository repository;

@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Tag(name = "Measurement")
 public class Measurement {
     @Id @GeneratedValue
     private int id;

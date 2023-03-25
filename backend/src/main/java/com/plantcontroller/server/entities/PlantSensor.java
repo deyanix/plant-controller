@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Tag(name="PlantSensor")
 public class PlantSensor {
     @Id @GeneratedValue
     private int id;

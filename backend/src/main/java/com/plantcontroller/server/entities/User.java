@@ -12,10 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Tag(name="User")
 public class User {
     private @Id @GeneratedValue int id;
-    private String name;
+    private String username;
     private String email;
     private String password;
 }

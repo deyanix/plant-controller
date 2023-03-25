@@ -2,11 +2,13 @@ package com.plantcontroller.server.controllers;
 
 import com.plantcontroller.server.entities.Measurement;
 import com.plantcontroller.server.repositories.MeasurementRepository;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
 
+@Tag(name = "Measurement")
 @RestController
 public class MeasurementController {
     private final MeasurementRepository repository;
