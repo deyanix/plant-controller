@@ -35,8 +35,8 @@ public class MeasurementController {
 
         return repository.findById(id)
                 .map(measurement -> {
-                    measurement.setMeasureDate(newMeasurement.getMeasureDate());
-                    measurement.setMeasureValue(newMeasurement.getMeasureValue());
+                    measurement.setDate(newMeasurement.getDate());
+                    measurement.setValue(newMeasurement.getValue());
                     measurement.setPlantSensor(newMeasurement.getPlantSensor());
                     return repository.save(measurement);
                 })

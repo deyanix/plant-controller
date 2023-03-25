@@ -15,27 +15,27 @@ public class PlantSensorController {
         this.repository = repository;
     }
 
-    @GetMapping("/plant_sensors")
+    @GetMapping("/plant-sensors")
     public List<PlantSensor> all() {
         return repository.findAll();
     }
 
-    @PostMapping("/plant_sensors")
+    @PostMapping("/plant-sensors")
     public PlantSensor create(@RequestBody PlantSensor newPlantSensor) {
         return repository.save(newPlantSensor);
     }
 
-    @GetMapping("/plant_sensors/{id}")
+    @GetMapping("/plant-sensors/{id}")
     public Optional<PlantSensor> one(@PathVariable int id) {
         return repository.findById(id);
     }
 
-    @PutMapping("/plant_sensors/{id}")
+    @PutMapping("/plant-sensors/{id}")
     public PlantSensor update(@RequestBody PlantSensor newPlantSensor, @PathVariable int id) {
 
         return repository.findById(id)
                 .map(plantSensor -> {
-                    plantSensor.setPlantSensorName(plantSensor.getPlantSensorName());
+                    plantSensor.setName(plantSensor.getName());
                     plantSensor.setUser(newPlantSensor.getUser());
                     return repository.save(plantSensor);
                 })
@@ -45,7 +45,7 @@ public class PlantSensorController {
                 });
     }
 
-    @DeleteMapping("/plant_sensors/{id}")
+    @DeleteMapping("/plant-sensors/{id}")
     public void delete(@PathVariable int id) {
         repository.deleteById(id);
     }

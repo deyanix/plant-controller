@@ -35,9 +35,9 @@ public class UserController {
 
         return repository.findById(id)
                 .map(user -> {
-                    user.setUserName(newUser.getUserName());
-                    user.setUserEmail(newUser.getUserPassword());
-                    user.setUserPassword(newUser.getUserPassword());
+                    user.setName(newUser.getName());
+                    user.setEmail(newUser.getEmail());
+                    user.setPassword(newUser.getPassword());
                     return repository.save(user);
                 })
                 .orElseGet(() -> {

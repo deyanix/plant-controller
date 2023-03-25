@@ -1,5 +1,6 @@
 package com.plantcontroller.server.entities;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,9 +12,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Tag(name="User")
 public class User {
     private @Id @GeneratedValue int id;
-    private String userName;
-    private String userEmail;
-    private String userPassword;
+    private String name;
+    private String email;
+    private String password;
 }
