@@ -1,7 +1,7 @@
-package com.plantcontroller.serwer.controllers;
+package com.plantcontroller.server.controllers;
 
-import com.plantcontroller.serwer.entities.User;
-import com.plantcontroller.serwer.repositories.UserRepository;
+import com.plantcontroller.server.entities.User;
+import com.plantcontroller.server.repositories.UserRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -9,10 +9,9 @@ import java.util.Optional;
 
 @RestController
 public class UserController {
-
     private final UserRepository repository;
 
-    UserController(UserRepository repository) {
+    public UserController(UserRepository repository) {
         this.repository = repository;
     }
 
@@ -22,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public User newUser(@RequestBody User newUser) {
+    public User create(@RequestBody User newUser) {
         return repository.save(newUser);
     }
 
@@ -32,7 +31,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{id}")
-    public User replaceUser(@RequestBody User newUser, @PathVariable int id) {
+    public User update(@RequestBody User newUser, @PathVariable int id) {
 
         return repository.findById(id)
                 .map(user -> {
@@ -48,7 +47,7 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public void deleteUser(@PathVariable int id) {
+    public void delete(@PathVariable int id) {
         repository.deleteById(id);
     }
 }

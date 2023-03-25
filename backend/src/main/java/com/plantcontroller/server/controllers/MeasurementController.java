@@ -1,7 +1,7 @@
-package com.plantcontroller.serwer.controllers;
+package com.plantcontroller.server.controllers;
 
-import com.plantcontroller.serwer.entities.Measurement;
-import com.plantcontroller.serwer.repositories.MeasurementRepository;
+import com.plantcontroller.server.entities.Measurement;
+import com.plantcontroller.server.repositories.MeasurementRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Optional;
 public class MeasurementController {
     private final MeasurementRepository repository;
 
-    MeasurementController(MeasurementRepository repository) {
+    public MeasurementController(MeasurementRepository repository) {
         this.repository = repository;
     }
 
@@ -21,7 +21,7 @@ public class MeasurementController {
     }
 
     @PostMapping("/measurements")
-    public Measurement getNewMeasurement(@RequestBody Measurement newMeasurement) {
+    public Measurement create(@RequestBody Measurement newMeasurement) {
         return repository.save(newMeasurement);
     }
 
@@ -31,7 +31,7 @@ public class MeasurementController {
     }
 
     @PutMapping("/measurements/{id}")
-    public Measurement replaceMeasurement(@RequestBody Measurement newMeasurement, @PathVariable int id) {
+    public Measurement update(@RequestBody Measurement newMeasurement, @PathVariable int id) {
 
         return repository.findById(id)
                 .map(measurement -> {
@@ -47,7 +47,7 @@ public class MeasurementController {
     }
 
     @DeleteMapping("/measurements/{id}")
-    public void deleteMeasurement(@PathVariable int id) {
+    public void delete(@PathVariable int id) {
         repository.deleteById(id);
     }
 }

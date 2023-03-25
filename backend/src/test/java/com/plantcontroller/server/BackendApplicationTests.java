@@ -1,4 +1,4 @@
-package com.plantcontroller.serwer;
+package com.plantcontroller.server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

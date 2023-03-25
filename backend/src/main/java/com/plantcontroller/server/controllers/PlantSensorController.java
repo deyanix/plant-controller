@@ -1,7 +1,7 @@
-package com.plantcontroller.serwer.controllers;
+package com.plantcontroller.server.controllers;
 
-import com.plantcontroller.serwer.entities.PlantSensor;
-import com.plantcontroller.serwer.repositories.PlantSensorRepository;
+import com.plantcontroller.server.entities.PlantSensor;
+import com.plantcontroller.server.repositories.PlantSensorRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Optional;
 public class PlantSensorController {
     private final PlantSensorRepository repository;
 
-    PlantSensorController(PlantSensorRepository repository) {
+    public PlantSensorController(PlantSensorRepository repository) {
         this.repository = repository;
     }
 
@@ -21,7 +21,7 @@ public class PlantSensorController {
     }
 
     @PostMapping("/plant_sensors")
-    public PlantSensor getNewPlantSensor(@RequestBody PlantSensor newPlantSensor) {
+    public PlantSensor create(@RequestBody PlantSensor newPlantSensor) {
         return repository.save(newPlantSensor);
     }
 
@@ -31,7 +31,7 @@ public class PlantSensorController {
     }
 
     @PutMapping("/plant_sensors/{id}")
-    public PlantSensor replacePlantSensor(@RequestBody PlantSensor newPlantSensor, @PathVariable int id) {
+    public PlantSensor update(@RequestBody PlantSensor newPlantSensor, @PathVariable int id) {
 
         return repository.findById(id)
                 .map(plantSensor -> {
@@ -46,7 +46,7 @@ public class PlantSensorController {
     }
 
     @DeleteMapping("/plant_sensors/{id}")
-    public void deletePlantSensor(@PathVariable int id) {
+    public void delete(@PathVariable int id) {
         repository.deleteById(id);
     }
 }

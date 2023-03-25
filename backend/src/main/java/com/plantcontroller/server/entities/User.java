@@ -1,4 +1,4 @@
-package com.plantcontroller.serwer.entities;
+package com.plantcontroller.server.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 public class User {
-    private @Id @GeneratedValue int Id;
+    private @Id @GeneratedValue int id;
     private String userName;
     private String userEmail;
     private String userPassword;

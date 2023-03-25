@@ -1,4 +1,4 @@
-package com.plantcontroller.serwer.entities;
+package com.plantcontroller.server.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class PlantSensor {
     @Id @GeneratedValue
-    private int Id;
+    private int id;
     private String plantSensorName;
-    @ManyToOne @JoinColumn(name="Id")
+    @ManyToOne @JoinColumn(name="user.id")
     private User user;
 }

@@ -1,6 +1,6 @@
-package com.plantcontroller.serwer.repositories;
+package com.plantcontroller.server.repositories;
 
-import com.plantcontroller.serwer.entities.Measurement;
+import com.plantcontroller.server.entities.Measurement;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MeasurementRepository extends JpaRepository<Measurement,Integer> {
