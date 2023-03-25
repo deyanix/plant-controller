@@ -1,9 +1,6 @@
 package com.plantcontroller.server.entities;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +9,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name="user")
 public class User {
-    private @Id @GeneratedValue int id;
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+
+    @Column(name="username", length = 50)
     private String username;
+
+    @Column(name="email", length = 100)
     private String email;
+
+    @Column(name="password", length = 30)
     private String password;
 }
