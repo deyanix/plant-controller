@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -18,11 +20,11 @@ public class Measurement {
     private int id;
 
     @Column(name="date")
-    private String date;
+    private LocalDateTime date;
 
-    @Column(name="value",precision = 5, scale = 2)
-    private BigDecimal value;
+    @Column(name="value")
+    private int value;
 
     @ManyToOne @JoinColumn(name="plant_sensor.id")
-    private PlantSensor plantSensor;
+    private Sensor plantSensor;
 }
