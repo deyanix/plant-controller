@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MeasurementValue {
-    private int value;
+public class Status {
+    private boolean sensorStatus;
+    private Double value;
 }

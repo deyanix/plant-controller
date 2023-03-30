@@ -15,6 +15,9 @@ public class Sensor {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(name="status")
+    private boolean status;
+
     @Column(name="name", length = 50)
     private String name;
 
