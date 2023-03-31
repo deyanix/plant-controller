@@ -1,54 +1,95 @@
 package com.plantcontroller.server.controllers;
 
+import com.plantcontroller.server.entities.Measurement;
+import com.plantcontroller.server.entities.MeasurementValue;
 import com.plantcontroller.server.entities.Sensor;
+import com.plantcontroller.server.entities.SensorState;
+import com.plantcontroller.server.errors.SensorNotFoundException;
+import com.plantcontroller.server.repositories.MeasurementRepository;
 import com.plantcontroller.server.repositories.SensorRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
 @Tag(name="Sensor")
 @RestController
 public class SensorController {
-    private final SensorRepository repository;
+    private final SensorRepository sensorRepository;
+    private final MeasurementRepository measurementRepository;
 
-    public SensorController(SensorRepository repository) {
-        this.repository = repository;
+    public SensorController(SensorRepository sensorRepository, MeasurementRepository measurementRepository) {
+        this.sensorRepository = sensorRepository;
+        this.measurementRepository = measurementRepository;
+    }
+
+    private static double getPercentageValue(int value, int maxValue) {
+        return (double)value / (double) maxValue;
+    }
+
+    private static boolean isActive(LocalTime currentTime, LocalDateTime lastMeasurement, int period) {
+        return currentTime.getSecond() - lastMeasurement.getSecond() <= period;
     }
 
     @GetMapping("/sensors")
     public List<Sensor> all() {
-        return repository.findAll();
+        return sensorRepository.findAll();
     }
 
     @PostMapping("/sensors")
     public Sensor create(@RequestBody Sensor newSensor) {
-        return repository.save(newSensor);
+        return sensorRepository.save(newSensor);
     }
 
     @GetMapping("/sensors/{id}")
     public Optional<Sensor> one(@PathVariable int id) {
-        return repository.findById(id);
+        return sensorRepository.findById(id);
     }
 
     @PutMapping("/sensors/{id}")
     public Sensor update(@RequestBody Sensor newSensor, @PathVariable int id) {
 
-        return repository.findById(id)
+        return sensorRepository.findById(id)
                 .map(plantSensor -> {
                     plantSensor.setName(plantSensor.getName());
                     plantSensor.setUser(newSensor.getUser());
-                    return repository.save(plantSensor);
+                    return sensorRepository.save(plantSensor);
                 })
                 .orElseGet(() -> {
                     newSensor.setId(id);
-                    return repository.save(newSensor);
+                    return sensorRepository.save(newSensor);
                 });
     }
 
     @DeleteMapping("/plant-sensors/{id}")
     public void delete(@PathVariable int id) {
-        repository.deleteById(id);
+        sensorRepository.deleteById(id);
+    }
+
+    @PostMapping("/sensors/{id}/measurements")
+    public Measurement saveMeasureValue(@RequestBody MeasurementValue newValue, @PathVariable int id) {
+        Measurement measurement = new Measurement();
+        measurement.setDate(LocalDateTime.now());
+        measurement.setValue(newValue.getValue());
+        measurement.setPlantSensor(sensorRepository.findById(id)
+                .orElseThrow(() -> new SensorNotFoundException(id)));
+
+        return measurementRepository.save(measurement);
+    }
+
+    @GetMapping("/sensors/{id}/status")
+    public SensorState getStatus(@PathVariable int id){
+        SensorState sensorState = new SensorState();
+        Sensor sensor = sensorRepository.findById(id)
+                .orElseThrow(() -> new SensorNotFoundException(id));
+        Measurement measurement = measurementRepository.findMeasurementByPlantSensor(sensor.getId());
+
+        sensorState.setActive(isActive(LocalTime.now(),measurement.getDate(),sensor.getPeriod()));
+        sensorState.setHumidity(getPercentageValue(measurement.getValue(),sensor.getMaxValue()));
+
+        return sensorState;
     }
 }
