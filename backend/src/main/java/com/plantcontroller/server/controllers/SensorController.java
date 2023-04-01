@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
+import com.plantcontroller.server.utilities.Utilities;
 
 @Tag(name="Sensor")
 @RestController
@@ -24,14 +25,6 @@ public class SensorController {
     public SensorController(SensorRepository sensorRepository, MeasurementRepository measurementRepository) {
         this.sensorRepository = sensorRepository;
         this.measurementRepository = measurementRepository;
-    }
-
-    private static double getPercentageValue(int value, int maxValue) {
-        return (double)value / (double) maxValue;
-    }
-
-    private static boolean isActive(LocalTime currentTime, LocalDateTime lastMeasurement, int period) {
-        return currentTime.getSecond() - lastMeasurement.getSecond() <= period;
     }
 
     @GetMapping("/sensors")
@@ -85,10 +78,10 @@ public class SensorController {
         SensorState sensorState = new SensorState();
         Sensor sensor = sensorRepository.findById(id)
                 .orElseThrow(() -> new SensorNotFoundException(id));
-        Measurement measurement = measurementRepository.findMeasurementByPlantSensor(sensor.getId());
+        Measurement measurement = measurementRepository.findLastByPlantSensor(sensor.getId());
 
-        sensorState.setActive(isActive(LocalTime.now(),measurement.getDate(),sensor.getPeriod()));
-        sensorState.setHumidity(getPercentageValue(measurement.getValue(),sensor.getMaxValue()));
+        sensorState.setActive(Utilities.isActive(LocalDateTime.now(),measurement.getDate(),sensor.getDuration()));
+        sensorState.setHumidity(Utilities.getPercentageValue(measurement.getValue(),sensor.getMaxValue()));
 
         return sensorState;
     }

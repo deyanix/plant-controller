@@ -18,8 +18,8 @@ public class Sensor {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name="period")
-    private int period;
+    @Column(name="duration")
+    private int duration;
 
     @Column(name="name", length = 50)
     private String name;
