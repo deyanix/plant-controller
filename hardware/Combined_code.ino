@@ -4,7 +4,6 @@
 #define Addr 0x48
 
 unsigned int count;
-float vtg;
 
 const char* ssid = "deyanix-Guest";
 const char* password = "S0CH!rum16";
