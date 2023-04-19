@@ -60,42 +60,31 @@
     isActive.value = !isActive.value
   }
 
-  onMounted(() => {
-    //rows.value = mainDashboardTable
-    rows.value = [
-    { id: 1, typ: 'typ 1', timestamp: '2023-03-22T10:30:00', value: 2137 },
-    { id: 2, typ: 'typ 2', timestamp: '2023-03-22T11:30:00', value: 2138 },
-    { id: 3, typ: 'typ 3', timestamp: '2023-03-22T12:30:00', value: 2139 },
-    { id: 4, typ: 'typ 4', timestamp: '2023-03-22T13:30:00', value: 2140 },
-    { id: 5, typ: 'typ 5', timestamp: '2023-03-22T14:30:00', value: 2141 },
-    { id: 6, typ: 'typ 1', timestamp: '2023-03-22T15:30:00', value: 2142 },
-    { id: 7, typ: 'typ 2', timestamp: '2023-03-22T16:30:00', value: 2143 },
-    { id: 8, typ: 'typ 3', timestamp: '2023-03-22T17:30:00', value: 2144 },
-    { id: 9, typ: 'typ 4', timestamp: '2023-03-22T18:30:00', value: 2145 },
-    { id: 10, typ: 'typ 5', timestamp: '2023-03-22T19:30:00', value: 2146 },
-    { id: 11, typ: 'typ 1', timestamp: '2023-03-22T20:30:00', value: 2147 },
-    { id: 12, typ: 'typ 2', timestamp: '2023-03-22T21:30:00', value: 2148 },
-    { id: 13, typ: 'typ 3', timestamp: '2023-03-22T22:30:00', value: 2149 },
-    { id: 14, typ: 'typ 4', timestamp: '2023-03-22T23:30:00', value: 2150 },
-    { id: 15, typ: 'typ 5', timestamp: '2023-03-23T00:30:00', value: 2151 },
-    { id: 16, typ: 'typ 1', timestamp: '2023-03-23T01:30:00', value: 2152 }
-    ]
-  })
-
-axios.get('https://schedule-api.deyanix.eu/test')
-  .then(function (response) {
-    // handle success
-    console.log(response);
+  onMounted(async () => {
+    const response = await axios.get('https://schedule-api.deyanix.eu/test')
     currentHumidityValue.value = response.data.humidity;
     isActive.value = response.data.active;
+
+    rows.value = [
+      { id: 1, typ: 'typ 1', timestamp: '2023-03-22T10:30:00', value: 2137 },
+      { id: 2, typ: 'typ 2', timestamp: '2023-03-22T11:30:00', value: 2138 },
+      { id: 3, typ: 'typ 3', timestamp: '2023-03-22T12:30:00', value: 2139 },
+      { id: 4, typ: 'typ 4', timestamp: '2023-03-22T13:30:00', value: 2140 },
+      { id: 5, typ: 'typ 5', timestamp: '2023-03-22T14:30:00', value: 2141 },
+      { id: 6, typ: 'typ 1', timestamp: '2023-03-22T15:30:00', value: 2142 },
+      { id: 7, typ: 'typ 2', timestamp: '2023-03-22T16:30:00', value: 2143 },
+      { id: 8, typ: 'typ 3', timestamp: '2023-03-22T17:30:00', value: 2144 },
+      { id: 9, typ: 'typ 4', timestamp: '2023-03-22T18:30:00', value: 2145 },
+      { id: 10, typ: 'typ 5', timestamp: '2023-03-22T19:30:00', value: 2146 },
+      { id: 11, typ: 'typ 1', timestamp: '2023-03-22T20:30:00', value: 2147 },
+      { id: 12, typ: 'typ 2', timestamp: '2023-03-22T21:30:00', value: 2148 },
+      { id: 13, typ: 'typ 3', timestamp: '2023-03-22T22:30:00', value: 2149 },
+      { id: 14, typ: 'typ 4', timestamp: '2023-03-22T23:30:00', value: 2150 },
+      { id: 15, typ: 'typ 5', timestamp: '2023-03-23T00:30:00', value: 2151 },
+      { id: 16, typ: 'typ 1', timestamp: '2023-03-23T01:30:00', value: 2152 }
+    ];
   })
-  .catch(function (error) {
-    // handle error
-    console.log(error);
-  })
-  .finally(function () {
-    // always executed
-  });
+
 
 </script>
 
