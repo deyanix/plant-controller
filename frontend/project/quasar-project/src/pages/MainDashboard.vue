@@ -5,6 +5,8 @@
   import SignallingDiode from 'src/components/SignallingDiode.vue';
   import CurrentHumidity from 'src/components/CurrentHumidity.vue'
   
+  import axios from 'axios';
+
   const props = defineProps({
   currentHumidity: String,
   changeCurrentHumidity: Function
@@ -79,6 +81,22 @@
     { id: 16, typ: 'typ 1', timestamp: '2023-03-23T01:30:00', value: 2152 }
     ]
   })
+
+axios.get('https://schedule-api.deyanix.eu/test')
+  .then(function (response) {
+    // handle success
+    console.log(response);
+    currentHumidityValue.value = response.data.humidity;
+    isActive.value = response.data.active;
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .finally(function () {
+    // always executed
+  });
+
 </script>
 
 <template>
