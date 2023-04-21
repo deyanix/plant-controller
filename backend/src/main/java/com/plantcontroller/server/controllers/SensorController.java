@@ -1,19 +1,17 @@
 package com.plantcontroller.server.controllers;
 
-import com.plantcontroller.server.entities.Measurement;
-import com.plantcontroller.server.entities.MeasurementValue;
-import com.plantcontroller.server.entities.Sensor;
-import com.plantcontroller.server.entities.SensorState;
+import com.plantcontroller.server.entities.*;
 import com.plantcontroller.server.errors.SensorNotFoundException;
 import com.plantcontroller.server.repositories.MeasurementRepository;
 import com.plantcontroller.server.repositories.SensorRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 import com.plantcontroller.server.utilities.Utilities;
 
 @Tag(name="Sensor")
@@ -25,41 +23,6 @@ public class SensorController {
     public SensorController(SensorRepository sensorRepository, MeasurementRepository measurementRepository) {
         this.sensorRepository = sensorRepository;
         this.measurementRepository = measurementRepository;
-    }
-
-    @GetMapping("/sensors")
-    public List<Sensor> all() {
-        return sensorRepository.findAll();
-    }
-
-    @PostMapping("/sensors")
-    public Sensor create(@RequestBody Sensor newSensor) {
-        return sensorRepository.save(newSensor);
-    }
-
-    @GetMapping("/sensors/{id}")
-    public Optional<Sensor> one(@PathVariable int id) {
-        return sensorRepository.findById(id);
-    }
-
-    @PutMapping("/sensors/{id}")
-    public Sensor update(@RequestBody Sensor newSensor, @PathVariable int id) {
-
-        return sensorRepository.findById(id)
-                .map(plantSensor -> {
-                    plantSensor.setName(plantSensor.getName());
-                    plantSensor.setUser(newSensor.getUser());
-                    return sensorRepository.save(plantSensor);
-                })
-                .orElseGet(() -> {
-                    newSensor.setId(id);
-                    return sensorRepository.save(newSensor);
-                });
-    }
-
-    @DeleteMapping("/plant-sensors/{id}")
-    public void delete(@PathVariable int id) {
-        sensorRepository.deleteById(id);
     }
 
     @PostMapping("/sensors/{id}/measurements")
@@ -84,5 +47,11 @@ public class SensorController {
         sensorState.setHumidity(Utilities.getPercentageValue(measurement.getValue(),sensor.getMaxValue()));
 
         return sensorState;
+    }
+
+    @GetMapping("/sensors/{id}/measurements")
+    @ResponseBody
+    public List<IMeasureGroup> getAll(@PathVariable int id) {
+        return measurementRepository.findAllById(id);
     }
 }
