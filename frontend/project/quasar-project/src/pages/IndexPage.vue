@@ -5,6 +5,9 @@
       src="~assets/quasar-logo-vertical.svg"
       style="width: 200px; height: 200px"
     >
+    <div class="q-pa-md">
+    <q-btn color="purple" @click="Loading.show()" label="Show Loading" />
+  </div>
   </q-page>
 </template>
 
