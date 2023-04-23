@@ -1,7 +1,6 @@
 <template>
 
   <q-layout view="hHh Lpr lFf">
-
     <q-header elevated>
       <q-toolbar>
         <q-btn
@@ -21,7 +20,6 @@
     </q-header>
 
     <q-drawer
-      class="bg-light-blue-2"
       v-model="leftDrawerOpen"
       show-if-above
       bordered
@@ -36,7 +34,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container class="bg-light-blue-8">
+    <q-page-container class="bg-light-blue-1">
       <router-view />
     </q-page-container>
   </q-layout>
@@ -45,8 +43,6 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import EssentialLink from 'components/EssentialLink.vue'
-
-import { Loading, useQuasar } from 'quasar'
 
 const linksList = [
   {
@@ -70,30 +66,11 @@ const linksList = [
 ]
 
 export default defineComponent({
-
-  onBeforeMount(){
-    Loading.show({
-      message: "Creating a new booking..."
-    });
-
-  },
-
-  name: 'MainLayout',
-
   components: {
     EssentialLink
   },
-
   setup () {
     const leftDrawerOpen = ref(false)
-
-    const $q = useQuasar()
-
-   $q.loading.show({
-      delay: 400 // ms
-    })
-
-  $q.loading.hide()
 
     return {
       essentialLinks: linksList,
@@ -103,6 +80,5 @@ export default defineComponent({
       }
     }
   },
-
 })
 </script>

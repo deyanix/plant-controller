@@ -1,8 +1,8 @@
 {
   "name": "quasar-project",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Quasar App",
+  "description": "Plant controller",
+  "productName": "Plant controller",
   "author": "Conqave <jasiod42@gmail.com>",
   "private": true,
   "scripts": {
@@ -17,6 +17,7 @@
     "@quasar/extras": "^1.0.0",
     "axios": "^1.3.6",
     "core-js": "^3.6.5",
+    "date-fns": "^2.29.3",
     "quasar": "^2.6.0",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0"

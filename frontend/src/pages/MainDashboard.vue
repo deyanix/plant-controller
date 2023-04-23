@@ -5,6 +5,7 @@
 
   import axios from 'axios';
   import {format} from "date-fns";
+  import {Loading} from "quasar";
 
   const props = defineProps({
   currentHumidity: String,
@@ -39,7 +40,6 @@
     }
 
   ])
-  const loading = ref(false);
   const pagination = ref({rowsPerPage: 10});
   const isActive = ref(false)
 
@@ -48,14 +48,20 @@
   }
 
   onMounted(async () => {
-    const [statusData, historyData] =
-      await Promise.all([
-        axios.get('http://localhost:8080/sensors/1/status'),
-        axios.get('http://localhost:8080/sensors/1/measurements')
-      ]);
-    currentHumidityValue.value = statusData.data.humidity;
-    isActive.value = statusData.data.active;
-    rows.value = historyData.data;
+    Loading.show({message: 'Loading data...'});
+
+    try {
+      const [statusData, historyData] =
+        await Promise.all([
+          axios.get('https://plant-controller.deyanix.eu/sensors/4/status'),
+          axios.get('https://plant-controller.deyanix.eu/sensors/4/measurements')
+        ]);
+      currentHumidityValue.value = statusData.data.humidity;
+      isActive.value = statusData.data.active;
+      rows.value = historyData.data;
+    } finally {
+      Loading.hide();
+    }
   })
 
 
@@ -63,19 +69,14 @@
 
 <template>
   <q-page padding>
-    <q-card class="bg-light-blue-1">
+    <q-card>
       <q-card-section>
         <div class="row">
-          <div class="col-12">
-            <h1 class="text-h4">Dashboard</h1>
+          <div class="col-4">
+            <div class="text-subtitle2 q-mb-sm">Device status</div>
+            <SignallingDiode v-bind:isActive="isActive" v-bind:toggleActive="toggleActive" />
           </div>
-          <div class="q-py-md col-4 d-inline-flex">
-            <div class="text-subtitle2 text-left q-mb-sm">Device status</div>
-            <div class="d-inline-block text-right">
-              <SignallingDiode v-bind:isActive="isActive" v-bind:toggleActive="toggleActive" />
-            </div>
-          </div>
-          <div class="col-4 q-pa-md">
+          <div class="col-4">
             <span class="text-subtitle2">
               <CurrentHumidity :current-humidity="currentHumidityValue" />
             </span>
@@ -88,7 +89,6 @@
           :pagination="pagination"
           :rows="rows"
           :columns="columns"
-          :loading="loading"
         />
       </q-card-section>
     </q-card>
