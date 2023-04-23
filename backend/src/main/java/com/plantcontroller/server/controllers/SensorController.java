@@ -43,8 +43,8 @@ public class SensorController {
                 .orElseThrow(() -> new SensorNotFoundException(id));
         Measurement measurement = measurementRepository.findLastByPlantSensor(sensor.getId());
 
-        sensorState.setActive(Utilities.isActive(LocalDateTime.now(),measurement.getDate(),sensor.getDuration()));
-        sensorState.setHumidity(Utilities.getPercentageValue(measurement.getValue(),sensor.getMaxValue()));
+        sensorState.setActive(Utilities.isActive(LocalDateTime.now(), measurement.getDate(), sensor.getDuration()));
+        sensorState.setHumidity(Utilities.getPercentageValue(measurement.getValue(), sensor.getMaxValue()));
 
         return sensorState;
     }

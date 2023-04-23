@@ -1,6 +1,6 @@
 <template>
 
-  <q-layout view="lHh Lpr lFf">
+  <q-layout view="hHh Lpr lFf">
 
     <q-header elevated>
       <q-toolbar>
@@ -14,10 +14,9 @@
         />
 
         <q-toolbar-title>
-          Optymalne Nawadnianie Roślin
+          Plant Controller
         </q-toolbar-title>
 
-        <!--<div>Quasar v{{ $q.version }}</div>-->
       </q-toolbar>
     </q-header>
 
@@ -28,16 +27,11 @@
       bordered
     >
       <q-list>
-        <q-item-label
-          header
-        >
-          Essential Links
-        </q-item-label>
-
         <EssentialLink
           v-for="link in essentialLinks"
           :key="link.title"
           v-bind="link"
+          disable
         />
       </q-list>
     </q-drawer>
@@ -55,12 +49,6 @@ import EssentialLink from 'components/EssentialLink.vue'
 import { Loading, useQuasar } from 'quasar'
 
 const linksList = [
-  {
-    title: 'Dashboard',
-    caption: 'Go to main dashboard page',
-    icon: 'dashboard',
-    link: 'main-dashboard'
-  },
   {
     title: 'Account',
     caption: 'Show accounts information',
@@ -91,7 +79,7 @@ export default defineComponent({
   },
 
   name: 'MainLayout',
-  
+
   components: {
     EssentialLink
   },

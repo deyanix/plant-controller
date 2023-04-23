@@ -5,7 +5,7 @@ import java.time.temporal.ChronoUnit;
 
 public class Utilities {
     public static double getPercentageValue(int value, int maxValue) {
-        return (double)value / (double)maxValue;
+        return Math.round(((double)value / (double)maxValue) * 100);
     }
 
     public static boolean isActive(LocalDateTime now, LocalDateTime lastMeasurement, int duration) {

@@ -4,6 +4,7 @@
   import CurrentHumidity from 'src/components/CurrentHumidity.vue'
 
   import axios from 'axios';
+  import {format} from "date-fns";
 
   const props = defineProps({
   currentHumidity: String,
@@ -23,35 +24,23 @@
   const rows = ref([])
   const columns = reactive([
     {
-      name: 'Id',
-      field: 'id',
+      label: 'Date',
+      field: 'date',
       align: 'left',
-      sortable: true
+      sortable: true,
+      format: (val) => format(new Date(val), 'dd MMMM yyyy HH:mm')
     },
     {
-      name: 'Typ',
-      field: 'type',
-      align: 'left',
-      sortable: true
-    },
-    {
-      name: 'Timestamp',
-      field: 'timestamp',
-      align: 'left',
-      sortable: true
-    },
-    {
-      name: 'Value',
+      label: 'Value',
       field: 'value',
       align: 'left',
-      sortable: true
+      sortable: true,
+      format: (val) => `${val} %`
     }
 
   ])
-  const loading = ref(false)
-  const hideHeader = ref(false)
-  const hideBottom = ref(false)
-
+  const loading = ref(false);
+  const pagination = ref({rowsPerPage: 10});
   const isActive = ref(false)
 
   const toggleActive = () => {
@@ -59,28 +48,14 @@
   }
 
   onMounted(async () => {
-    const response = await axios.get('https://localhost:8080/test')
-    currentHumidityValue.value = response.data.humidity;
-    isActive.value = response.data.active;
-
-    rows.value = [
-      { id: 1, typ: 'typ 1', timestamp: '2023-03-22T10:30:00', value: 2137 },
-      { id: 2, typ: 'typ 2', timestamp: '2023-03-22T11:30:00', value: 2138 },
-      { id: 3, typ: 'typ 3', timestamp: '2023-03-22T12:30:00', value: 2139 },
-      { id: 4, typ: 'typ 4', timestamp: '2023-03-22T13:30:00', value: 2140 },
-      { id: 5, typ: 'typ 5', timestamp: '2023-03-22T14:30:00', value: 2141 },
-      { id: 6, typ: 'typ 1', timestamp: '2023-03-22T15:30:00', value: 2142 },
-      { id: 7, typ: 'typ 2', timestamp: '2023-03-22T16:30:00', value: 2143 },
-      { id: 8, typ: 'typ 3', timestamp: '2023-03-22T17:30:00', value: 2144 },
-      { id: 9, typ: 'typ 4', timestamp: '2023-03-22T18:30:00', value: 2145 },
-      { id: 10, typ: 'typ 5', timestamp: '2023-03-22T19:30:00', value: 2146 },
-      { id: 11, typ: 'typ 1', timestamp: '2023-03-22T20:30:00', value: 2147 },
-      { id: 12, typ: 'typ 2', timestamp: '2023-03-22T21:30:00', value: 2148 },
-      { id: 13, typ: 'typ 3', timestamp: '2023-03-22T22:30:00', value: 2149 },
-      { id: 14, typ: 'typ 4', timestamp: '2023-03-22T23:30:00', value: 2150 },
-      { id: 15, typ: 'typ 5', timestamp: '2023-03-23T00:30:00', value: 2151 },
-      { id: 16, typ: 'typ 1', timestamp: '2023-03-23T01:30:00', value: 2152 }
-    ];
+    const [statusData, historyData] =
+      await Promise.all([
+        axios.get('http://localhost:8080/sensors/1/status'),
+        axios.get('http://localhost:8080/sensors/1/measurements')
+      ]);
+    currentHumidityValue.value = statusData.data.humidity;
+    isActive.value = statusData.data.active;
+    rows.value = historyData.data;
   })
 
 
@@ -94,31 +69,26 @@
           <div class="col-12">
             <h1 class="text-h4">Dashboard</h1>
           </div>
-          <div class="q-pa-md col-4 d-inline-flex">
-            <span class="text-subtitle2 text-left">Device Status:</span>
+          <div class="q-py-md col-4 d-inline-flex">
+            <div class="text-subtitle2 text-left q-mb-sm">Device status</div>
             <div class="d-inline-block text-right">
               <SignallingDiode v-bind:isActive="isActive" v-bind:toggleActive="toggleActive" />
             </div>
           </div>
           <div class="col-4 q-pa-md">
-            <span class="text-subtitle2"><CurrentHumidity :current-humidity="currentHumidityValue" /></span>
-          </div>
-          <div class="col-4 text-right q-pa-md">
-            <q-btn @click="toggleActive" class="full-width">Klik!</q-btn>
-            <br><br>
-            <q-input outlined id="humidityInput" class="full-width" v-model="currentHumidityValue" @keyup.enter="updateCurrentHumidity" />
+            <span class="text-subtitle2">
+              <CurrentHumidity :current-humidity="currentHumidityValue" />
+            </span>
           </div>
         </div>
       </q-card-section>
       <q-card-section>
         <q-table
           row-key="id"
-          v-bind:pagination="{ rowsPerPage: 10 }"
-          v-bind:rows="rows"
-          v-bind:columns="columns"
-          v-bind:loading="loading"
-          v-bind:hide-header="hideHeader"
-          v-bind:hide-bottom="hideBottom"
+          :pagination="pagination"
+          :rows="rows"
+          :columns="columns"
+          :loading="loading"
         />
       </q-card-section>
     </q-card>

@@ -13,7 +13,11 @@ public interface MeasurementRepository extends JpaRepository<Measurement,Integer
 
     @Query(value= """
             SELECT
-                AVG(m.value) AS value,
+                ROUND(
+                    (AVG(m.value) / 
+                    (SELECT max_value FROM sensor WHERE id = :sensorId)) 
+                    * 100
+                ) AS value,
                 DATE_FORMAT(m.date, '%Y-%m-%dT%H:00:00') AS groupedDate
             FROM
                 measurement AS m
@@ -22,7 +26,7 @@ public interface MeasurementRepository extends JpaRepository<Measurement,Integer
             GROUP BY
                 groupedDate
             ORDER BY
-                groupedDate;
+                groupedDate DESC;
             """,
             nativeQuery = true)
     List<IMeasureGroup> findAllById(int sensorId);
