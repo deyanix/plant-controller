@@ -16,8 +16,8 @@ public interface MeasurementRepository extends JpaRepository<Measurement,Integer
                 ROUND(
                     (AVG(m.value) / 
                     (SELECT max_value FROM sensor WHERE id = :sensorId)) 
-                    * 100
-                ) AS value,
+                    * 10000
+                )/100 AS value,
                 DATE_FORMAT(m.date, '%Y-%m-%dT%H:00:00') AS groupedDate
             FROM
                 measurement AS m
