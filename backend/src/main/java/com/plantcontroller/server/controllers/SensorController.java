@@ -5,7 +5,6 @@ import com.plantcontroller.server.errors.SensorNotFoundException;
 import com.plantcontroller.server.repositories.MeasurementRepository;
 import com.plantcontroller.server.repositories.SensorRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -23,6 +22,17 @@ public class SensorController {
     public SensorController(SensorRepository sensorRepository, MeasurementRepository measurementRepository) {
         this.sensorRepository = sensorRepository;
         this.measurementRepository = measurementRepository;
+    }
+
+    @GetMapping("/sensors")
+    public List<SensorInformation> getAllSensors() {
+        List<Sensor> sensor = sensorRepository.findAll();
+        List<SensorInformation> sensorInformation = new ArrayList<>();
+        for(int i=0; i<sensor.size(); i++) {
+            Sensor sensorElement = sensor.get(i);
+            sensorInformation.add(new SensorInformation(sensorElement.getId(),sensorElement.getDuration(),sensorElement.getMaxValue(),sensorElement.getName()));
+        }
+        return sensorInformation;
     }
 
     @PostMapping("/sensors/{id}/measurements")
