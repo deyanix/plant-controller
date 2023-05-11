@@ -1,11 +1,17 @@
 <script setup>
-  import { ref, reactive, computed, onMounted } from 'vue'
+  import { ref, reactive, computed, onMounted, defineAsyncComponent, defineComponent } from 'vue'
   import SignallingDiode from 'src/components/SignallingDiode.vue';
   import CurrentHumidity from 'src/components/CurrentHumidity.vue'
 
   import axios from 'axios';
   import {format} from "date-fns";
   import {Loading} from "quasar";
+import LineChart from 'src/components/LineChart.vue';
+
+
+  const chartExample = defineAsyncComponent(() =>
+  import('src/components/LineChart.vue')
+  )
 
   const props = defineProps({
   currentHumidity: String,
@@ -83,6 +89,7 @@
           </div>
         </div>
       </q-card-section>
+      <chartExample></chartExample>
       <q-card-section>
         <q-table
           row-key="id"
