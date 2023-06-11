@@ -24,6 +24,9 @@ public class Sensor {
     @Column(name="name", length = 50)
     private String name;
 
+    @Column(name="min_value")
+    private int minValue;
+
     @Column(name="max_value")
     private int maxValue;
 

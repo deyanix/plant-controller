@@ -1,10 +1,11 @@
 <script setup>
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, shallowRef} from 'vue'
 import SignallingDiode from 'src/components/SignallingDiode.vue';
 import CurrentHumidity from 'src/components/CurrentHumidity.vue'
 import axios from 'axios';
 import {format} from "date-fns";
 import {Loading} from "quasar";
+import {api, wsClient} from "boot/api";
 
 const columns = [
   {
@@ -28,28 +29,52 @@ const sensor = ref();
 const status = ref();
 const rows = ref([])
 const pagination = ref({rowsPerPage: 10});
+const wsUnsubscribe = shallowRef();
+const wsTimeout = ref();
 
 async function fetchSensors() {
-  const sensorsRes = await axios.get('https://plant-controller.deyanix.eu/sensors');
+  const sensorsRes = await api.get('/sensors');
   sensors.value = sensorsRes.data;
-  sensor.value = sensors.value[0]?.id;
+  sensor.value = sensors.value[0];
 }
 
 async function fetchSensor(id) {
   const [statusRes, historyRes] =
     await Promise.all([
-      axios.get(`https://plant-controller.deyanix.eu/sensors/${id}/status`),
-      axios.get(`https://plant-controller.deyanix.eu/sensors/${id}/measurements`)
+      api.get(`/sensors/${id}/status`),
+      api.get(`/sensors/${id}/measurements`)
     ]);
-  status.value = statusRes.data;
   rows.value = historyRes.data;
+  updateStatus(id, statusRes.data);
+}
+
+function updateStatus(id, data) {
+  status.value = data;
+  clearTimeout(wsTimeout.value);
+  if (data.active) {
+    wsTimeout.value = setTimeout(() => {
+      wsClient.publish({destination: `/app/sensors/${id}/status`})
+    }, sensor.value?.duration * 1000 * 3)
+  }
+}
+
+function subscribeStatus(id) {
+  wsUnsubscribe.value?.();
+  const {unsubscribe} = wsClient.subscribe(`/topic/sensors/${id}/status`, message => {
+    if (sensor.value?.id === id) {
+      updateStatus(id, JSON.parse(message.body));
+    }
+  });
+  wsUnsubscribe.value = unsubscribe;
 }
 
 async function onChangeSensor() {
   Loading.show({message: 'Loading sensor data...'});
   try {
-    if (sensor.value !== undefined) {
-      await fetchSensor(sensor.value);
+    const id = sensor.value?.id;
+    if (id !== undefined) {
+      await fetchSensor(id);
+      subscribeStatus(id);
     }
   } finally {
     Loading.hide();
@@ -80,7 +105,6 @@ onMounted(async () => {
                 :options="sensors"
                 option-label="name"
                 option-value="id"
-                emit-value
                 map-options
                 filled
                 dense

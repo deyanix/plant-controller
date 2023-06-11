@@ -2,10 +2,13 @@
   <router-view />
 </template>
 
-<script>
-import { defineComponent } from 'vue'
+<script setup>
+import {onBeforeMount} from "vue";
+import { Client } from '@stomp/stompjs';
 
-export default defineComponent({
-  name: 'App'
+
+onBeforeMount(() => {
+
 })
+
 </script>

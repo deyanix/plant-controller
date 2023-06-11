@@ -4,23 +4,29 @@ import com.plantcontroller.server.entities.*;
 import com.plantcontroller.server.errors.SensorNotFoundException;
 import com.plantcontroller.server.repositories.MeasurementRepository;
 import com.plantcontroller.server.repositories.SensorRepository;
+import com.plantcontroller.server.services.SensorService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.plantcontroller.server.utilities.Utilities;
-
 @Tag(name="Sensor")
 @RestController
 public class SensorController {
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final SensorRepository sensorRepository;
+    private final SensorService sensorService;
     private final MeasurementRepository measurementRepository;
 
-    public SensorController(SensorRepository sensorRepository, MeasurementRepository measurementRepository) {
+    public SensorController(SimpMessagingTemplate simpMessagingTemplate, SensorRepository sensorRepository, SensorService sensorService, MeasurementRepository measurementRepository) {
+        this.simpMessagingTemplate = simpMessagingTemplate;
         this.sensorRepository = sensorRepository;
+        this.sensorService = sensorService;
         this.measurementRepository = measurementRepository;
     }
 
@@ -28,9 +34,8 @@ public class SensorController {
     public List<SensorInformation> getAllSensors() {
         List<Sensor> sensor = sensorRepository.findAll();
         List<SensorInformation> sensorInformation = new ArrayList<>();
-        for(int i=0; i<sensor.size(); i++) {
-            Sensor sensorElement = sensor.get(i);
-            sensorInformation.add(new SensorInformation(sensorElement.getId(),sensorElement.getDuration(),sensorElement.getMaxValue(),sensorElement.getName()));
+        for (Sensor sensorElement : sensor) {
+            sensorInformation.add(new SensorInformation(sensorElement.getId(), sensorElement.getDuration(), sensorElement.getMaxValue(), sensorElement.getName()));
         }
         return sensorInformation;
     }
@@ -43,25 +48,29 @@ public class SensorController {
         measurement.setPlantSensor(sensorRepository.findById(id)
                 .orElseThrow(() -> new SensorNotFoundException(id)));
 
-        return measurementRepository.save(measurement);
+        measurementRepository.save(measurement);
+        simpMessagingTemplate.convertAndSend(
+                String.format("/topic/sensors/%d/status", id),
+                sensorService.getCurrentState(id));
+
+        return measurement;
     }
 
     @GetMapping("/sensors/{id}/status")
     public SensorState getStatus(@PathVariable int id){
-        SensorState sensorState = new SensorState();
-        Sensor sensor = sensorRepository.findById(id)
-                .orElseThrow(() -> new SensorNotFoundException(id));
-        Measurement measurement = measurementRepository.findLastByPlantSensor(sensor.getId());
-
-        sensorState.setActive(Utilities.isActive(LocalDateTime.now(), measurement.getDate(), sensor.getDuration()));
-        sensorState.setHumidity(Utilities.getPercentageValue(measurement.getValue(), sensor.getMaxValue()));
-
-        return sensorState;
+        return sensorService.getCurrentState(id);
     }
 
     @GetMapping("/sensors/{id}/measurements")
     @ResponseBody
     public List<IMeasureGroup> getAll(@PathVariable int id) {
         return measurementRepository.findAllById(id);
+    }
+
+    @MessageMapping("/sensors/{id}/status")
+    public void getWsStatus(@DestinationVariable int id) {
+        simpMessagingTemplate.convertAndSend(
+                String.format("/topic/sensors/%d/status", id),
+                sensorService.getCurrentState(id));
     }
 }

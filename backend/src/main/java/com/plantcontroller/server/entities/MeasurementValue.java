@@ -11,5 +11,4 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class MeasurementValue {
     private int value;
-    private LocalDateTime date;
 }
