@@ -30,6 +30,12 @@ public class Sensor {
     @Column(name="max_value")
     private int maxValue;
 
+    @Column(name="preferred_value")
+    private int preferredValue;
+
+    @Column(name="inverted")
+    private boolean inverted;
+
     @ManyToOne @JoinColumn(name="user.id")
     private User user;
 }

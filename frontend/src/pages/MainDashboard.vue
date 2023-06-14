@@ -1,11 +1,111 @@
 <script setup>
-import {ref, onMounted, shallowRef} from 'vue'
+import {ref, onMounted, shallowRef, onBeforeMount, computed, onUnmounted} from 'vue'
 import SignallingDiode from 'src/components/SignallingDiode.vue';
 import CurrentHumidity from 'src/components/CurrentHumidity.vue'
-import axios from 'axios';
 import {format} from "date-fns";
-import {Loading} from "quasar";
+import {getCssVar, Loading} from "quasar";
 import {api, wsClient} from "boot/api";
+import {Line} from "vue-chartjs";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend, TimeScale
+} from 'chart.js';
+import 'chartjs-adapter-luxon';
+import logo from 'src/assets/logo.png';
+
+const data = computed(() => ({
+  datasets: [{
+    label: 'Humidity',
+    data: rows.value.map(r => ({
+      x: new Date(r.date),
+      y: r.value
+    })),
+    borderColor: getCssVar('primary'),
+    backgroundColor: '#00892b80'
+  }],
+}))
+
+const options = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    title: {
+      display: true,
+      text: 'Last week measurements'
+    }
+  },
+  scales: {
+    x: {
+      type: 'time',
+      time: {
+        unit: 'day'
+      },
+      title: {
+        display: true,
+        text: 'Date'
+      }
+    },
+    y: {
+      min: 0,
+      max: 100,
+      ticks: {
+        callback: function(value) {
+          return value + '%';
+        }
+      }
+    }
+  }
+}
+
+const hourData = computed(() => ({
+  datasets: [{
+    label: 'Humidity',
+    data: hourRows.value.map(r => ({
+      x: new Date(r.date),
+      y: r.value
+    })),
+    borderColor: getCssVar('primary'),
+    backgroundColor: '#00892b80'
+  }],
+}))
+
+const hourOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    title: {
+      display: true,
+      text: 'Last hour measurements'
+    }
+  },
+  scales: {
+    x: {
+      type: 'time',
+      time: {
+        unit: 'minute'
+      },
+      title: {
+        display: true,
+        text: 'Date'
+      }
+    },
+    y: {
+      min: 0,
+      max: 100,
+      ticks: {
+        callback: function(value) {
+          return value + '%';
+        }
+      }
+    }
+  }
+}
 
 const columns = [
   {
@@ -27,7 +127,8 @@ const columns = [
 const sensors = ref([]);
 const sensor = ref();
 const status = ref();
-const rows = ref([])
+const rows = ref([]);
+const hourRows = ref([]);
 const pagination = ref({rowsPerPage: 10});
 const wsUnsubscribe = shallowRef();
 const wsTimeout = ref();
@@ -38,17 +139,30 @@ async function fetchSensors() {
   sensor.value = sensors.value[0];
 }
 
+async function updateHourHistory(id) {
+  hourRows.value = (await api.get(`/sensors/${id}/measurements/last-hour`)).data;
+}
+
 async function fetchSensor(id) {
   const [statusRes, historyRes] =
     await Promise.all([
       api.get(`/sensors/${id}/status`),
-      api.get(`/sensors/${id}/measurements`)
+      api.get(`/sensors/${id}/measurements/last-week`),
+      updateHourHistory(id)
     ]);
   rows.value = historyRes.data;
   updateStatus(id, statusRes.data);
 }
 
 function updateStatus(id, data) {
+  if (id === status.value?.id && status.value?.preferred === true && data?.preferred === false) {
+    if (("Notification" in window) && Notification.permission === "granted") {
+      new Notification("Your plant is drying up!", {
+        icon: logo
+      });
+    }
+  }
+  data.id = id;
   status.value = data;
   clearTimeout(wsTimeout.value);
   if (data.active) {
@@ -63,6 +177,11 @@ function subscribeStatus(id) {
   const {unsubscribe} = wsClient.subscribe(`/topic/sensors/${id}/status`, message => {
     if (sensor.value?.id === id) {
       updateStatus(id, JSON.parse(message.body));
+    }
+  });
+  wsClient.subscribe(`/topic/sensors/${id}/history`, message => {
+    if (sensor.value?.id === id) {
+      hourRows.value = JSON.parse(message.body);
     }
   });
   wsUnsubscribe.value = unsubscribe;
@@ -81,6 +200,23 @@ async function onChangeSensor() {
   }
 }
 
+onBeforeMount(() => {
+  if ("Notification" in window) {
+    Notification.requestPermission()
+  }
+
+  ChartJS.register(
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
+    TimeScale
+  )
+})
+
 onMounted(async () => {
   Loading.show({message: 'Loading sensors...'});
   try {
@@ -90,6 +226,10 @@ onMounted(async () => {
     Loading.hide();
   }
 });
+
+onUnmounted(() => {
+  wsUnsubscribe.value?.();
+})
 </script>
 
 <template>
@@ -137,6 +277,19 @@ onMounted(async () => {
           </div>
         </div>
       </q-card-section>
+      <q-separator/>
+      <q-card-section style="height: 400px">
+        <q-scroll-area class="fit">
+            <Line :data="hourData" :options="hourOptions" style="min-width: 520px; max-width: 100%"/>
+        </q-scroll-area>
+      </q-card-section>
+      <q-separator/>
+      <q-card-section style="height: 400px">
+        <q-scroll-area class="fit">
+          <Line :data="data" :options="options" style="min-width: 520px; max-width: 100%"/>
+        </q-scroll-area>
+      </q-card-section>
+      <q-separator/>
       <q-card-section>
         <q-table
           row-key="id"

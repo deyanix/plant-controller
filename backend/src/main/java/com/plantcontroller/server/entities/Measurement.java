@@ -28,11 +28,17 @@ public class Measurement {
     @JoinColumn(name = "plant_sensor.id")
     private Sensor plantSensor;
 
+    public boolean isPreferred() {
+        return plantSensor.isInverted() ?
+                plantSensor.getPreferredValue() >= value :
+                plantSensor.getPreferredValue() <= value;
+    }
+
     public double getPercentageValue() {
         double val = Math.max(getValue() - plantSensor.getMinValue(), 0);
         double percent = val / (plantSensor.getMaxValue() - plantSensor.getMinValue());
-
-        return Math.round(percent * 10000) / 100d;
+        double result = Math.round(percent * 10000) / 100d;
+        return plantSensor.isInverted() ? 100 - result : result;
     }
 
     public boolean isActive(LocalDateTime date) {

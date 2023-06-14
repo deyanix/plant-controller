@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class SensorState {
     private boolean active;
     private double humidity;
+    private boolean preferred;
 }

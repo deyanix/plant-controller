@@ -24,10 +24,11 @@ public class SensorService {
 		SensorState sensorState = new SensorState();
 		Sensor sensor = sensorRepository.findById(id)
 				.orElseThrow(() -> new SensorNotFoundException(id));
-		Measurement measurement = measurementRepository.findLastByPlantSensor(sensor.getId());
-
+		Measurement measurement = measurementRepository.findLastBySensor(sensor.getId());
+		measurement.setPlantSensor(sensor);
 		sensorState.setActive(measurement.isActive(LocalDateTime.now()));
 		sensorState.setHumidity(measurement.getPercentageValue());
+		sensorState.setPreferred(measurement.isPreferred());
 		return sensorState;
 	}
 

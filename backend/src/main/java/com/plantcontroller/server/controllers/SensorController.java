@@ -52,6 +52,9 @@ public class SensorController {
         simpMessagingTemplate.convertAndSend(
                 String.format("/topic/sensors/%d/status", id),
                 sensorService.getCurrentState(id));
+        simpMessagingTemplate.convertAndSend(
+                String.format("/topic/sensors/%d/history", id),
+                measurementRepository.findLastHourBySensor(id));
 
         return measurement;
     }
@@ -61,10 +64,16 @@ public class SensorController {
         return sensorService.getCurrentState(id);
     }
 
-    @GetMapping("/sensors/{id}/measurements")
+    @GetMapping("/sensors/{id}/measurements/last-week")
     @ResponseBody
-    public List<IMeasureGroup> getAll(@PathVariable int id) {
-        return measurementRepository.findAllById(id);
+    public List<IMeasureGroup> getAllFromLastWeek(@PathVariable int id) {
+        return measurementRepository.findLastWeekBySensor(id);
+    }
+
+    @GetMapping("/sensors/{id}/measurements/last-hour")
+    @ResponseBody
+    public List<IMeasureGroup> getAllFromLastHour(@PathVariable int id) {
+        return measurementRepository.findLastHourBySensor(id);
     }
 
     @MessageMapping("/sensors/{id}/status")
@@ -72,5 +81,8 @@ public class SensorController {
         simpMessagingTemplate.convertAndSend(
                 String.format("/topic/sensors/%d/status", id),
                 sensorService.getCurrentState(id));
+        simpMessagingTemplate.convertAndSend(
+                String.format("/topic/sensors/%d/history", id),
+                measurementRepository.findLastHourBySensor(id));
     }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-mb-sm">Current humidity</div>
+  <div class="q-mb-sm">Latest humidity</div>
   <div class="text-subtitle2"> {{ value.toFixed(2) }} % </div>
 </template>
 

@@ -1,38 +1,14 @@
 <template>
-
   <q-layout view="hHh Lpr lFf">
     <q-header elevated>
       <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
-
-        <q-toolbar-title>
-          Plant Controller
+        <q-toolbar-title class="row q-gutter-x-sm items-center">
+          <img :src="logo" class="q-my-xs" style="height: 26px" alt="Logo"/>
+          <div>Plant Controller</div>
         </q-toolbar-title>
 
       </q-toolbar>
     </q-header>
-
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <EssentialLink
-          v-for="link in essentialLinks"
-          :key="link.title"
-          v-bind="link"
-          disable
-        />
-      </q-list>
-    </q-drawer>
 
     <q-page-container class="bg-light-blue-1">
       <router-view />
@@ -40,45 +16,6 @@
   </q-layout>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
-
-const linksList = [
-  {
-    title: 'Account',
-    caption: 'Show accounts information',
-    icon: 'person',
-    link: '#'
-  },
-  {
-    title: 'Plants',
-    caption: 'Show your plants',
-    icon: 'emoji_nature',
-    link: '#'
-  },
-  {
-    title: 'Settings',
-    caption: 'Change your account settings',
-    icon: 'settings',
-    link: '#'
-  },
-]
-
-export default defineComponent({
-  components: {
-    EssentialLink
-  },
-  setup () {
-    const leftDrawerOpen = ref(false)
-
-    return {
-      essentialLinks: linksList,
-      leftDrawerOpen,
-      toggleLeftDrawer () {
-        leftDrawerOpen.value = !leftDrawerOpen.value
-      }
-    }
-  },
-})
+<script setup>
+import logo from 'src/assets/logo.png';
 </script>
