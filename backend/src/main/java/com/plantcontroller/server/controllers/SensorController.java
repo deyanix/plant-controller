@@ -28,6 +28,7 @@ public class SensorController {
     public List<SensorInformation> getAllSensors() {
         List<Sensor> sensor = sensorRepository.findAll();
         List<SensorInformation> sensorInformation = new ArrayList<>();
+
         for(int i=0; i<sensor.size(); i++) {
             Sensor sensorElement = sensor.get(i);
             sensorInformation.add(new SensorInformation(sensorElement.getId(),sensorElement.getDuration(),sensorElement.getMaxValue(),sensorElement.getName()));
